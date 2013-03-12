@@ -76,7 +76,7 @@ _win_hcreate_r (nel, htab)
   htab->filled = 0;
 
   /* allocate memory and zero out */
-  htab->table = (_PLIBC_SEARCH_ENTRY *) calloc (htab->size + 1, sizeof (_PLIBC_SEARCH_ENTRY));
+  htab->table = (_PLIBC_SEARCH_ENTRY *) __builtin_calloc (htab->size + 1, sizeof (_PLIBC_SEARCH_ENTRY));
   if (htab->table == NULL)
     return 0;
 
@@ -99,7 +99,7 @@ _win_hdestroy_r (htab)
     }
 
   /* Free used memory.  */
-  free (htab->table);
+  __builtin_free (htab->table);
 
   /* the sign for an existing table is an value != NULL in htable */
   htab->table = NULL;
@@ -128,7 +128,7 @@ _win_hsearch_r (item, action, retval, htab)
 {
   unsigned int hval;
   unsigned int count;
-  unsigned int len = strlen (item.key);
+  unsigned int len = __builtin_strlen (item.key);
   unsigned int idx;
 
   /* Compute an value for the given string. Perhaps use a better method. */
