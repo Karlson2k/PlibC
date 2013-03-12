@@ -73,5 +73,5 @@ dnl Checks for typedefs, structures, and compiler characteristics.
 dnl Checks for library functions.
 
 LDFLAGS="$LDFLAGS -no-undefined"
-CPPFLAGS="$CPPFLAGS -D_CRT_NON_CONFORMING_SWPRINTFS"
+CPPFLAGS="$CPPFLAGS -D_CRT_NON_CONFORMING_SWPRINTFS -DUSE_IPV6"
 AC_OUTPUT(Makefile src/Makefile src/include/Makefile plibc.lsm plibc.spec)

@@ -12795,7 +12795,7 @@ fi
 
 
 LDFLAGS="$LDFLAGS -no-undefined"
-CPPFLAGS="$CPPFLAGS -D_CRT_NON_CONFORMING_SWPRINTFS"
+CPPFLAGS="$CPPFLAGS -D_CRT_NON_CONFORMING_SWPRINTFS -DUSE_IPV6"
 ac_config_files="$ac_config_files Makefile src/Makefile src/include/Makefile plibc.lsm plibc.spec"
 
 cat >confcache <<\_ACEOF
