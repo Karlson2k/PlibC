@@ -13629,7 +13629,7 @@ _ACEOF
 
 fi
 
-LDFLAGS="$LDFLAGS -no-undefined -Wl,--export-all-symbols -lws2_32"
+LDFLAGS="$LDFLAGS -Wl,--export-all-symbols -lws2_32"
 
 
 { echo "$as_me:$LINENO: checking for ANSI C header files" >&5
@@ -15492,6 +15492,7 @@ echo "${ECHO_T}$ac_cv_func_mknod" >&6; }
 
 
 
+LDFLAGS="$LDFLAGS -no-undefined"
 ac_config_files="$ac_config_files Makefile src/Makefile src/include/Makefile plibc.lsm plibc.spec"
 
 cat >confcache <<\_ACEOF

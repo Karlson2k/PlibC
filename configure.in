@@ -51,7 +51,7 @@ AC_SUBST(LTDLINCL)
 AC_SUBST(LIBLTDL)
 
 AC_CHECK_LIB(intl, gettext)
-LDFLAGS="$LDFLAGS -no-undefined -Wl,--export-all-symbols -lws2_32"
+LDFLAGS="$LDFLAGS -Wl,--export-all-symbols -lws2_32"
 
 dnl Checks for libraries.
 
@@ -73,4 +73,5 @@ dnl Checks for typedefs, structures, and compiler characteristics.
 
 dnl Checks for library functions.
 
+LDFLAGS="$LDFLAGS -no-undefined"
 AC_OUTPUT(Makefile src/Makefile src/include/Makefile plibc.lsm plibc.spec)
