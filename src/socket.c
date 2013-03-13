@@ -262,7 +262,11 @@ struct hostent *_win_gethostbyname(const char *name)
  */
 struct hostent *gethostbyname2(const char *name, int af)
 {
-  if (!(af == AF_INET || af == AF_UNSPEC))
+  if (!(af == AF_INET || af == AF_UNSPEC
+#if USE_IPV6
+         || af == AF_INET6
+#endif
+         ))
   {
     SetHErrnoFromWinError(WSANO_RECOVERY);
     return NULL;
