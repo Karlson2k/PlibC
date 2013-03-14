@@ -70,8 +70,8 @@ extern "C" {
 /* Convert LARGE_INTEGER to double */
 #define Li2Double(x) ((double)((x).HighPart) * 4.294967296E9 + \
   (double)((x).LowPart))
-#ifndef __MINGW64__
-struct stat64
+#if !defined(_stat64) && !defined(stat64)
+struct _stat64
 {
     _dev_t st_dev;
     _ino_t st_ino;
@@ -85,6 +85,7 @@ struct stat64
     __time64_t st_mtime;
     __time64_t st_ctime;
 };
+#define stat64 _stat64
 #endif
 typedef unsigned int sa_family_t;
 
@@ -116,101 +117,244 @@ enum
 };
 
 /* Thanks to the Cygwin project */
-#define ENOCSI 43	/* No CSI structure available */
-#define EL2HLT 44	/* Level 2 halted */
+#define PLIBCEBASE 110
+#ifndef ENOCSI
+  #define ENOCSI 43+PLIBCEBASE	/* No CSI structure available */
+#endif /* ENOCSI */
+#ifndef EL2HLT
+  #define EL2HLT 44+PLIBCEBASE	/* Level 2 halted */
+#endif /* EL2HLT */
 #ifndef  EDEADLK
-	#define EDEADLK 45	/* Deadlock condition */
+	#define EDEADLK 45+PLIBCEBASE	/* Deadlock condition */
 #endif
 #ifndef  ENOLCK
-	#define ENOLCK 46	/* No record locks available */
+	#define ENOLCK 46+PLIBCEBASE	/* No record locks available */
 #endif
-#define EBADE 50	/* Invalid exchange */
-#define EBADR 51	/* Invalid request descriptor */
-#define EXFULL 52	/* Exchange full */
-#define ENOANO 53	/* No anode */
-#define EBADRQC 54	/* Invalid request code */
-#define EBADSLT 55	/* Invalid slot */
+#ifndef EBADE
+  #define EBADE 50+PLIBCEBASE	/* Invalid exchange */
+#endif /* EBADE */
+#ifndef EBADR
+  #define EBADR 51+PLIBCEBASE	/* Invalid request descriptor */
+#endif /* EBADR */
+#ifndef EXFULL
+  #define EXFULL 52+PLIBCEBASE	/* Exchange full */
+#endif /* EXFULL */
+#ifndef ENOANO
+  #define ENOANO 53+PLIBCEBASE	/* No anode */
+#endif /* ENOANO */
+#ifndef EBADRQC
+  #define EBADRQC 54+PLIBCEBASE	/* Invalid request code */
+#endif /* EBADRQC */
+#ifndef EBADSLT
+  #define EBADSLT 55+PLIBCEBASE	/* Invalid slot */
+#endif /* EBADSLT */
 #ifndef  EDEADLOCK
 	#define EDEADLOCK EDEADLK	/* File locking deadlock error */
 #endif
-#define EBFONT 57	/* Bad font file fmt */
-#define ENOSTR 60	/* Device not a stream */
-#define ENODATA 61	/* No data (for no delay io) */
-#define ETIME 62	/* Timer expired */
-#define ENOSR 63	/* Out of streams resources */
-#define ENONET 64	/* Machine is not on the network */
-#define ENOPKG 65	/* Package not installed */
-#define EREMOTE 66	/* The object is remote */
-#define ENOLINK 67	/* The link has been severed */
-#define EADV 68		/* Advertise error */
-#define ESRMNT 69	/* Srmount error */
-#define ECOMM 70	/* Communication error on send */
-#define EPROTO 71	/* Protocol error */
-#define EMULTIHOP 74	/* Multihop attempted */
-#define ELBIN 75	/* Inode is remote (not really error) */
-#define EDOTDOT 76	/* Cross mount point (not really error) */
-#define EBADMSG 77	/* Trying to read unreadable message */
-#define ENOTUNIQ 80	/* Given log. name not unique */
-#define EBADFD 81	/* f.d. invalid for this operation */
-#define EREMCHG 82	/* Remote address changed */
-#define ELIBACC 83	/* Can't access a needed shared lib */
-#define ELIBBAD 84	/* Accessing a corrupted shared lib */
-#define ELIBSCN 85	/* .lib section in a.out corrupted */
-#define ELIBMAX 86	/* Attempting to link in too many libs */
-#define ELIBEXEC 87	/* Attempting to exec a shared library */
+#ifndef EBFONT
+  #define EBFONT 57+PLIBCEBASE	/* Bad font file fmt */
+#endif /* EBFONT */
+#ifndef ENOSTR
+  #define ENOSTR 60+PLIBCEBASE	/* Device not a stream */
+#endif /* ENOSTR */
+#ifndef ENODATA
+  #define ENODATA 61+PLIBCEBASE	/* No data (for no delay io) */
+#endif /* ENODATA */
+#ifndef ETIME
+  #define ETIME 62+PLIBCEBASE	/* Timer expired */
+#endif /* ETIME */
+#ifndef ENOSR
+  #define ENOSR 63+PLIBCEBASE	/* Out of streams resources */
+#endif /* ENOSR */
+#ifndef ENONET
+  #define ENONET 64+PLIBCEBASE	/* Machine is not on the network */
+#endif /* ENONET */
+#ifndef ENOPKG
+  #define ENOPKG 65+PLIBCEBASE	/* Package not installed */
+#endif /* ENOPKG */
+#ifndef EREMOTE
+  #define EREMOTE 66+PLIBCEBASE	/* The object is remote */
+#endif /* EREMOTE */
+#ifndef ENOLINK
+  #define ENOLINK 67+PLIBCEBASE	/* The link has been severed */
+#endif /* ENOLINK */
+#ifndef EADV
+  #define EADV 68+PLIBCEBASE		/* Advertise error */
+#endif /* EADV */
+#ifndef ESRMNT
+  #define ESRMNT 69+PLIBCEBASE	/* Srmount error */
+#endif /* ESRMNT */
+#ifndef ECOMM
+  #define ECOMM 70+PLIBCEBASE	/* Communication error on send */
+#endif /* ECOMM */
+#ifndef EPROTO
+  #define EPROTO 71+PLIBCEBASE	/* Protocol error */
+#endif /* EPROTO */
+#ifndef EMULTIHOP
+  #define EMULTIHOP 74+PLIBCEBASE	/* Multihop attempted */
+#endif /* EMULTIHOP */
+#ifndef ELBIN
+  #define ELBIN 75+PLIBCEBASE	/* Inode is remote (not really error) */
+#endif /* ELBIN */
+#ifndef EDOTDOT
+  #define EDOTDOT 76+PLIBCEBASE	/* Cross mount point (not really error) */
+#endif /* EDOTDOT */
+#ifndef EBADMSG
+  #define EBADMSG 77+PLIBCEBASE	/* Trying to read unreadable message */
+#endif /* EBADMSG */
+#ifndef ENOTUNIQ
+  #define ENOTUNIQ 80+PLIBCEBASE	/* Given log. name not unique */
+#endif /* ENOTUNIQ */
+#ifndef EBADFD
+  #define EBADFD 81+PLIBCEBASE	/* f.d. invalid for this operation */
+#endif /* EBADFD */
+#ifndef EREMCHG
+  #define EREMCHG 82+PLIBCEBASE	/* Remote address changed */
+#endif /* EREMCHG */
+#ifndef ELIBACC
+  #define ELIBACC 83+PLIBCEBASE	/* Can't access a needed shared lib */
+#endif /* ELIBACC */
+#ifndef ELIBBAD
+  #define ELIBBAD 84+PLIBCEBASE	/* Accessing a corrupted shared lib */
+#endif /* ELIBBAD */
+#ifndef ELIBSCN
+  #define ELIBSCN 85+PLIBCEBASE	/* .lib section in a.out corrupted */
+#endif /* ELIBSCN */
+#ifndef ELIBMAX
+  #define ELIBMAX 86+PLIBCEBASE	/* Attempting to link in too many libs */
+#endif /* ELIBMAX */
+#ifndef ELIBEXEC
+  #define ELIBEXEC 87+PLIBCEBASE	/* Attempting to exec a shared library */
+#endif /* ELIBEXEC */
 #ifndef  ENOSYS
-	#define ENOSYS 88	/* Function not implemented */
+	#define ENOSYS 88+PLIBCEBASE	/* Function not implemented */
 #endif
-#define ENMFILE 89      /* No more files */
+#ifndef ENMFILE
+  #define ENMFILE 89+PLIBCEBASE      /* No more files */
+#endif /* ENMFILE */
 #ifndef  ENOTEMPTY
-	#define ENOTEMPTY 90	/* Directory not empty */
+	#define ENOTEMPTY 90+PLIBCEBASE	/* Directory not empty */
 #endif
 #ifndef  ENAMETOOLONG
-	#define ENAMETOOLONG 91	/* File or path name too long */
+	#define ENAMETOOLONG 91+PLIBCEBASE	/* File or path name too long */
 #endif
-#define ELOOP 92	/* Too many symbolic links */
-#define EOPNOTSUPP 95	/* Operation not supported on transport endpoint */
-#define EPFNOSUPPORT 96 /* Protocol family not supported */
-#define ECONNRESET 104  /* Connection reset by peer */
-#define ENOBUFS 105	/* No buffer space available */
-#define EAFNOSUPPORT 106 /* Address family not supported by protocol family */
-#define EPROTOTYPE 107	/* Protocol wrong type for socket */
-#define ENOTSOCK 108	/* Socket operation on non-socket */
-#define ENOPROTOOPT 109	/* Protocol not available */
-#define ESHUTDOWN 110	/* Can't send after socket shutdown */
-#define ECONNREFUSED 111	/* Connection refused */
-#define EADDRINUSE 112		/* Address already in use */
-#define ECONNABORTED 113	/* Connection aborted */
-#define ENETUNREACH 114		/* Network is unreachable */
-#define ENETDOWN 115		/* Network interface is not configured */
+#ifndef ELOOP
+  #define ELOOP 92+PLIBCEBASE	/* Too many symbolic links */
+#endif /* ELOOP */
+#ifndef EOPNOTSUPP
+  #define EOPNOTSUPP 95+PLIBCEBASE	/* Operation not supported on transport endpoint */
+#endif /* EOPNOTSUPP */
+#ifndef EPFNOSUPPORT
+  #define EPFNOSUPPORT 96+PLIBCEBASE /* Protocol family not supported */
+#endif /* EPFNOSUPPORT */
+#ifndef ECONNRESET
+  #define ECONNRESET 104+PLIBCEBASE  /* Connection reset by peer */
+#endif /* ECONNRESET */
+#ifndef ENOBUFS
+  #define ENOBUFS 105+PLIBCEBASE	/* No buffer space available */
+#endif /* ENOBUFS */
+#ifndef EAFNOSUPPORT
+  #define EAFNOSUPPORT 106+PLIBCEBASE /* Address family not supported by protocol family */
+#endif /* EAFNOSUPPORT */
+#ifndef EPROTOTYPE
+  #define EPROTOTYPE 107+PLIBCEBASE	/* Protocol wrong type for socket */
+#endif /* EPROTOTYPE */
+#ifndef ENOTSOCK
+  #define ENOTSOCK 108+PLIBCEBASE	/* Socket operation on non-socket */
+#endif /* ENOTSOCK */
+#ifndef ENOPROTOOPT
+  #define ENOPROTOOPT 109+PLIBCEBASE	/* Protocol not available */
+#endif /* ENOPROTOOPT */
+#ifndef ESHUTDOWN
+  #define ESHUTDOWN 110+PLIBCEBASE	/* Can't send after socket shutdown */
+#endif /* ESHUTDOWN */
+#ifndef ECONNREFUSED
+  #define ECONNREFUSED 111+PLIBCEBASE	/* Connection refused */
+#endif /* ECONNREFUSED */
+#ifndef EADDRINUSE
+  #define EADDRINUSE 112+PLIBCEBASE		/* Address already in use */
+#endif /* EADDRINUSE */
+#ifndef ECONNABORTED
+  #define ECONNABORTED 113+PLIBCEBASE	/* Connection aborted */
+#endif /* ECONNABORTED */
+#ifndef ENETUNREACH
+  #define ENETUNREACH 114+PLIBCEBASE		/* Network is unreachable */
+#endif /* ENETUNREACH */
+#ifndef ENETDOWN
+  #define ENETDOWN 115+PLIBCEBASE		/* Network interface is not configured */
+#endif /* ENETDOWN */
 #ifndef  ETIMEDOUT
-	#define ETIMEDOUT 116		/* Connection timed out */
+	#define ETIMEDOUT 116+PLIBCEBASE		/* Connection timed out */
 #endif
-#define EHOSTDOWN 117		/* Host is down */
-#define EHOSTUNREACH 118	/* Host is unreachable */
-#define EINPROGRESS 119		/* Connection already in progress */
-#define EALREADY 120		/* Socket already connected */
-#define EDESTADDRREQ 121	/* Destination address required */
-#define EMSGSIZE 122		/* Message too long */
-#define EPROTONOSUPPORT 123	/* Unknown protocol */
-#define ESOCKTNOSUPPORT 124	/* Socket type not supported */
-#define EADDRNOTAVAIL 125	/* Address not available */
-#define ENETRESET 126		/* Connection aborted by network */
-#define EISCONN 127		    /* Socket is already connected */
-#define ENOTCONN 128		/* Socket is not connected */
-#define ETOOMANYREFS 129	/* Too many references: cannot splice */
-#define EPROCLIM 130		/* Too many processes */
-#define EUSERS 131			/* Too many users */
-#define EDQUOT 132			/* Disk quota exceeded */
-#define ESTALE 133          /* Unknown error */
+#ifndef EHOSTDOWN
+  #define EHOSTDOWN 117+PLIBCEBASE		/* Host is down */
+#endif /* EHOSTDOWN */
+#ifndef EHOSTUNREACH
+  #define EHOSTUNREACH 118+PLIBCEBASE	/* Host is unreachable */
+#endif /* EHOSTUNREACH */
+#ifndef EINPROGRESS
+  #define EINPROGRESS 119+PLIBCEBASE		/* Connection already in progress */
+#endif /* EINPROGRESS */
+#ifndef EALREADY
+  #define EALREADY 120+PLIBCEBASE		/* Socket already connected */
+#endif /* EALREADY */
+#ifndef EDESTADDRREQ
+  #define EDESTADDRREQ 121+PLIBCEBASE	/* Destination address required */
+#endif /* EDESTADDRREQ */
+#ifndef EMSGSIZE
+  #define EMSGSIZE 122+PLIBCEBASE		/* Message too long */
+#endif /* EMSGSIZE */
+#ifndef EPROTONOSUPPORT
+  #define EPROTONOSUPPORT 123+PLIBCEBASE	/* Unknown protocol */
+#endif /* EPROTONOSUPPORT */
+#ifndef ESOCKTNOSUPPORT
+  #define ESOCKTNOSUPPORT 124+PLIBCEBASE	/* Socket type not supported */
+#endif /* ESOCKTNOSUPPORT */
+#ifndef EADDRNOTAVAIL
+  #define EADDRNOTAVAIL 125+PLIBCEBASE	/* Address not available */
+#endif /* EADDRNOTAVAIL */
+#ifndef ENETRESET
+  #define ENETRESET 126+PLIBCEBASE		/* Connection aborted by network */
+#endif /* ENETRESET */
+#ifndef EISCONN
+  #define EISCONN 127+PLIBCEBASE		    /* Socket is already connected */
+#endif /* EISCONN */
+#ifndef ENOTCONN
+  #define ENOTCONN 128+PLIBCEBASE		/* Socket is not connected */
+#endif /* ENOTCONN */
+#ifndef ETOOMANYREFS
+  #define ETOOMANYREFS 129+PLIBCEBASE	/* Too many references: cannot splice */
+#endif /* ETOOMANYREFS */
+#ifndef EPROCLIM
+  #define EPROCLIM 130+PLIBCEBASE		/* Too many processes */
+#endif /* EPROCLIM */
+#ifndef EUSERS
+  #define EUSERS 131+PLIBCEBASE			/* Too many users */
+#endif /* EUSERS */
+#ifndef EDQUOT
+  #define EDQUOT 132+PLIBCEBASE			/* Disk quota exceeded */
+#endif /* EDQUOT */
+#ifndef ESTALE
+  #define ESTALE 133+PLIBCEBASE          /* Unknown error */
+#endif /* ESTALE */
 #ifndef  ENOTSUP
-	#define ENOTSUP 134		    /* Not supported */
+	#define ENOTSUP 134+PLIBCEBASE		    /* Not supported */
 #endif
-#define ENOMEDIUM 135       /* No medium (in tape drive) */
-#define ENOSHARE 136        /* No such host or network path */
-#define ECASECLASH 137      /* Filename exists with different case */
-#define EWOULDBLOCK EAGAIN	/* Operation would block */
-#define EOVERFLOW 139 /* Value too large for defined data type */
+#ifndef ENOMEDIUM
+  #define ENOMEDIUM 135+PLIBCEBASE       /* No medium (in tape drive) */
+#endif /* ENOMEDIUM */
+#ifndef ENOSHARE
+  #define ENOSHARE 136+PLIBCEBASE        /* No such host or network path */
+#endif /* ENOSHARE */
+#ifndef ECASECLASH
+  #define ECASECLASH 137+PLIBCEBASE      /* Filename exists with different case */
+#endif /* ECASECLASH */
+#ifndef EWOULDBLOCK
+  #define EWOULDBLOCK EAGAIN	/* Operation would block */
+#endif /* EWOULDBLOCK */
+#ifndef EOVERFLOW
+  #define EOVERFLOW 139+PLIBCEBASE /* Value too large for defined data type */
+#endif /* EOVERFLOW */
 
 #undef HOST_NOT_FOUND
 #define HOST_NOT_FOUND 1
