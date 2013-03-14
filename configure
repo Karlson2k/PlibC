@@ -12269,6 +12269,29 @@ cat >>confdefs.h <<_ACEOF
 #define HAVE_DECL_GETNAMEINFO $ac_have_decl
 _ACEOF
 
+ac_fn_c_check_decl "$LINENO" "getaddrinfo" "ac_cv_have_decl_getaddrinfo" "#include <ws2tcpip.h>
+"
+if test "x$ac_cv_have_decl_getaddrinfo" = xyes; then :
+  ac_have_decl=1
+else
+  ac_have_decl=0
+fi
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE_DECL_GETADDRINFO $ac_have_decl
+_ACEOF
+ac_fn_c_check_decl "$LINENO" "freeaddrinfo" "ac_cv_have_decl_freeaddrinfo" "#include <ws2tcpip.h>
+"
+if test "x$ac_cv_have_decl_freeaddrinfo" = xyes; then :
+  ac_have_decl=1
+else
+  ac_have_decl=0
+fi
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE_DECL_FREEADDRINFO $ac_have_decl
+_ACEOF
+
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether sys/types.h defines makedev" >&5
 $as_echo_n "checking whether sys/types.h defines makedev... " >&6; }
@@ -12796,6 +12819,7 @@ fi
 
 LDFLAGS="$LDFLAGS -no-undefined"
 CPPFLAGS="$CPPFLAGS -D_CRT_NON_CONFORMING_SWPRINTFS -DUSE_IPV6"
+CFLAGS="$CFLAGS -Wall -Wuninitialized -Winit-self -Wimplicit -Wtype-limits -Wredundant-decls -Wlogical-op -Wno-pointer-sign"
 ac_config_files="$ac_config_files Makefile src/Makefile src/include/Makefile plibc.lsm plibc.spec"
 
 cat >confcache <<\_ACEOF

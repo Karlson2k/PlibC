@@ -49,6 +49,14 @@
    you don't. */
 #undef HAVE_DECL_CYGWIN_CONV_PATH
 
+/* Define to 1 if you have the declaration of `freeaddrinfo', and to 0 if you
+   don't. */
+#undef HAVE_DECL_FREEADDRINFO
+
+/* Define to 1 if you have the declaration of `getaddrinfo', and to 0 if you
+   don't. */
+#undef HAVE_DECL_GETADDRINFO
+
 /* Define to 1 if you have the declaration of `getnameinfo', and to 0 if you
    don't. */
 #undef HAVE_DECL_GETNAMEINFO
