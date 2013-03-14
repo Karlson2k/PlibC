@@ -24,15 +24,16 @@
 
 #include "plibc_private.h"
 
-static unsigned int _plibc_weak_rand32_state = 1;
-
 /**
  * @brief pseudo-random number function
  */
 long _win_random(void)
 {
-  _plibc_weak_rand32_state = ((_plibc_weak_rand32_state * 1103515245) + 12345) & 0x7fffffff;
-  return _plibc_weak_rand32_state;
+#if defined(RAND_MAX) && (RAND_MAX == 32767)
+  return rand();
+#else
+  return (((rand()<<7 + rand())<<7 + rand())<<7 + rand())<<4 + rand();
+#endif
 }
 
 /**
@@ -40,7 +41,7 @@ long _win_random(void)
  */
 void _win_srandom(unsigned int seed)
 {
-  _plibc_weak_rand32_state = seed;
+  srand(seed);
 }
 
 /* end of random.c */
