@@ -1,8 +1,12 @@
+  This modification of PlibC is made primary for microhttpd.
+  It includes UTF-8 support, many fixes and enhancements.
+
 	plibc - POSIX compliant libc extension for Windows
 
 
 
-  Copyright (C) 2005 - 2010 Nils Durner
+  Copyright (C) 2005 - 2012 Nils Durner
+  Copyright (C) 2013 Evgeny Grin
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
