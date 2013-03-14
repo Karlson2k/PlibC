@@ -64,7 +64,7 @@ int _win_open(const char *filename, int oflag, ...)
   else
     iFD = open((char *) szFile, oflag, mode);
   if (iFD != -1)
-    __win_SetHandleType((DWORD) iFD, FD_HANDLE);
+    __win_SetHandleType(iFD, FD_HANDLE);
 
   return iFD;
 }

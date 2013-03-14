@@ -34,7 +34,7 @@ extern HANDLE hMappingsLock;
  * @author Nils Durner
  */
 void *_win_mmap(void *start, size_t len, int access, int flags, int fd,
-                unsigned long long off) {
+                uint64_t off) {
   DWORD protect, high, low, access_param;
   HANDLE h, hFile;
   SECURITY_ATTRIBUTES sec_none;
@@ -75,7 +75,7 @@ void *_win_mmap(void *start, size_t len, int access, int flags, int fd,
   }
 
   high = off >> 32;
-  low = off & ULONG_MAX;
+  low = off & 0xFFFFFFFF;
   base = NULL;
 
   /* If a non-zero start is given, try mapping using the given address first.
@@ -244,12 +244,12 @@ int _win_munmap(void *start, size_t length)
 
     ReleaseMutex(hMappingsLock);
 
-    return success ? 0 : (int) MAP_FAILED;
+    return success ? 0 : -1;
   }
   else
   {
     SetErrnoFromWinError(GetLastError());
-    return (int) MAP_FAILED;
+    return -1;
   }
 }
 

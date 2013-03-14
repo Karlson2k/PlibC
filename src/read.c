@@ -28,17 +28,17 @@ DWORD WINAPI __win_Read(TReadWriteInfo *pInfo)
 {
   int iRet;
   
-  if (__win_GetHandleType((DWORD) pInfo->fildes) == FD_HANDLE)
+  if (__win_GetHandleType(pInfo->fildes) == FD_HANDLE)
   {
     _setmode(pInfo->fildes, _O_BINARY);
-		errno = 0;
-		iRet = _read(pInfo->fildes, pInfo->buf, pInfo->nbyte);
+    errno = 0;
+    iRet = _read(pInfo->fildes, pInfo->buf, pInfo->nbyte);
     free(pInfo);
     
     return iRet;
-	}
-	else
-	{
+  }
+  else
+  {
     DWORD dwRead;
     
     errno = 0;
@@ -54,7 +54,7 @@ DWORD WINAPI __win_Read(TReadWriteInfo *pInfo)
       free(pInfo);
       return dwRead;
     }
-	}
+  }
 }
 
 /**
@@ -64,7 +64,7 @@ DWORD WINAPI __win_Read(TReadWriteInfo *pInfo)
  */
 int _win_read(int fildes, void *buf, size_t nbyte)
 {
-  if (__win_GetHandleType((DWORD) fildes) == SOCKET_HANDLE)
+  if (__win_GetHandleType(fildes) == SOCKET_HANDLE)
     return _win_recv(fildes, (char *) buf, nbyte, 0);
   else
   {

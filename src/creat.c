@@ -49,7 +49,7 @@ int _win_creat(const char *path, mode_t mode)
   else
     iFD = _creat((char *) szFile, mode);
   if (iFD != -1)
-    __win_SetHandleType((DWORD) iFD, FD_HANDLE);
+    __win_SetHandleType(iFD, FD_HANDLE);
 
   return iFD;
 }

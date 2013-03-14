@@ -28,12 +28,12 @@ extern unsigned int uiSockCount;
 extern Winsock *pSocks;
 extern HANDLE hSocksLock;
 
-int _win_close(int fd)
+int _win_close(intptr_t fd)
 {
   THandleType theType;
   int ret;
 
-  theType = __win_GetHandleType((DWORD) fd);
+  theType = __win_GetHandleType(fd);
   switch(theType)
   {
     case SOCKET_HANDLE:

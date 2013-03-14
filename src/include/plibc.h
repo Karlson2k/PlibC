@@ -60,6 +60,7 @@ extern "C" {
 #include <dirent.h>
 #include <errno.h>
 #include <stdarg.h>
+#include <stdint.h>
 
 #define __BYTE_ORDER BYTE_ORDER
 #define __BIG_ENDIAN BIG_ENDIAN
@@ -95,7 +96,7 @@ struct sockaddr_un {
 };
 
 #ifndef pid_t
-  #define pid_t DWORD
+  #define pid_t intptr_t
 #endif
 
 #ifndef error_t
@@ -493,10 +494,10 @@ long QueryRegistry(HKEY hMainKey, const char *pszKey, const char *pszSubKey,
 long QueryRegistryW(HKEY hMainKey, const wchar_t *pszKey, const wchar_t *pszSubKey,
               wchar_t *pszBuffer, long *pdLength);
 
-BOOL __win_IsHandleMarkedAsBlocking(int hHandle);
-void __win_SetHandleBlockingMode(int s, BOOL bBlocking);
-void __win_DiscardHandleBlockingMode(int s);
-int _win_isSocketValid(int s);
+BOOL __win_IsHandleMarkedAsBlocking(intptr_t hHandle);
+void __win_SetHandleBlockingMode(intptr_t s, BOOL bBlocking);
+void __win_DiscardHandleBlockingMode(intptr_t s);
+int _win_isSocketValid(intptr_t s);
 int plibc_conv_to_win_path(const char *pszUnix, char *pszWindows);
 int plibc_conv_to_win_pathw(const wchar_t *pszUnix, wchar_t *pwszWindows);
 
@@ -547,7 +548,7 @@ int _win_open(const char *filename, int oflag, ...);
 char *_win_bindtextdomain(const char *domainname, const char *dirname);
 #endif
 int _win_chdir(const char *path);
-int _win_close(int fd);
+int _win_close(intptr_t fd);
 int _win_creat(const char *path, mode_t mode);
 char *_win_ctime(const time_t *clock);
 char *_win_ctime_r(const time_t *clock, char *buf);
@@ -555,7 +556,7 @@ int _win_fstat(int handle, struct _stat *buffer);
 int _win_ftruncate(int fildes, off_t length);
 void _win_gettimeofday(struct timeval *tp, void *tzp);
 int _win_kill(pid_t pid, int sig);
-int _win_pipe(int *phandles);
+int _win_pipe(intptr_t *phandles);
 int _win_rmdir(const char *path);
 int _win_access( const char *path, int mode );
 int _win_chmod(const char *filename, int pmode);
@@ -574,13 +575,12 @@ size_t _win_fwrite(const void *buffer, size_t size, size_t count, FILE *stream);
 size_t _win_fread( void *buffer, size_t size, size_t count, FILE *stream );
 int _win_symlink(const char *path1, const char *path2);
 void *_win_mmap(void *start, size_t len, int access, int flags, int fd,
-                unsigned long long offset);
+                uint64_t offset);
 int _win_msync(void *start, size_t length, int flags);
 int _win_munmap(void *start, size_t length);
 int _win_lstat(const char *path, struct _stat *buf);
 int _win_lstat64(const char *path, struct stat64 *buf);
 int _win_readlink(const char *path, char *buf, size_t bufsize);
-int _win_accept(int s, struct sockaddr *addr, int *addrlen);
 
 int _win_printf(const char *format,...);
 int _win_wprintf(const wchar_t *format, ...);
@@ -626,27 +626,27 @@ int _win_fwscanf(FILE *stream, const wchar_t *format, ...);
 
 
 pid_t _win_waitpid(pid_t pid, int *stat_loc, int options);
-int _win_bind(int s, const struct sockaddr *name, int namelen);
-int _win_connect(int s,const struct sockaddr *name, int namelen);
-int _win_getpeername(int s, struct sockaddr *name,
+intptr_t _win_accept(intptr_t s, struct sockaddr *addr, int *addrlen);
+intptr_t _win_bind(intptr_t s, const struct sockaddr *name, int namelen);
+int _win_connect(intptr_t s, const struct sockaddr *name, int namelen);
+int _win_getpeername(intptr_t s, struct sockaddr *name,
                 int *namelen);
-int _win_getsockname(int s, struct sockaddr *name,
+int _win_getsockname(intptr_t s, struct sockaddr *name,
                 int *namelen);
-int _win_getsockopt(int s, int level, int optname, char *optval,
-				int *optlen);
-int _win_listen(int s, int backlog);
-int _win_recv(int s, char *buf, int len, int flags);
-int _win_recvfrom(int s, void *buf, int len, int flags,
+int _win_getsockopt(intptr_t s, int level, int optname, char *optval, int *optlen);
+int _win_listen(intptr_t s, int backlog);
+int _win_recv(intptr_t s, char *buf, int len, int flags);
+int _win_recvfrom(intptr_t s, void *buf, int len, int flags,
              struct sockaddr *from, int *fromlen);
 int _win_select(int max_fd, fd_set * rfds, fd_set * wfds, fd_set * efds,
                 const struct timeval *tv);
-int _win_send(int s, const char *buf, int len, int flags);
-int _win_sendto(int s, const char *buf, int len, int flags,
+int _win_send(intptr_t s, const char *buf, int len, int flags);
+int _win_sendto(intptr_t s, const char *buf, int len, int flags,
                 const struct sockaddr *to, int tolen);
-int _win_setsockopt(int s, int level, int optname, const void *optval,
+int _win_setsockopt(intptr_t s, int level, int optname, const void *optval,
                     int optlen);
-int _win_shutdown(int s, int how);
-int _win_socket(int af, int type, int protocol);
+int _win_shutdown(intptr_t s, int how);
+intptr_t _win_socket(int af, int type, int protocol);
 struct hostent *_win_gethostbyaddr(const char *addr, int len, int type);
 struct hostent *_win_gethostbyname(const char *name);
 struct hostent *gethostbyname2(const char *name, int af);

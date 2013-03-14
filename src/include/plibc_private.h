@@ -66,7 +66,7 @@ extern TPanicProc __plibc_panic;
 
 typedef struct
 {
-  int fildes;
+  intptr_t fildes;
   void *buf;
   size_t nbyte;
 } TReadWriteInfo;
@@ -77,7 +77,7 @@ typedef int (*TWStat64) (const wchar_t *path, struct stat64 *buffer);
 typedef enum {UNKNOWN_HANDLE, SOCKET_HANDLE, PIPE_HANDLE, FD_HANDLE} THandleType;
 typedef struct
 {
-  DWORD dwHandle;
+  intptr_t dwHandle;
   THandleType eType;
 } THandleInfo;
 

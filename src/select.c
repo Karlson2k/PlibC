@@ -92,7 +92,7 @@ int _win_select(int max_fd, fd_set * rfds, fd_set * wfds, fd_set * efds,
     {
       unsigned long ulVal;
 
-      if (__win_GetHandleType((DWORD) i) == SOCKET_HANDLE) 
+      if (__win_GetHandleType(i) == SOCKET_HANDLE) 
       {
         /* socket */
         if(SAFE_FD_ISSET(i, rfds))
@@ -109,13 +109,13 @@ int _win_select(int max_fd, fd_set * rfds, fd_set * wfds, fd_set * efds,
       }
       else
       {
-        if (__win_GetHandleType((DWORD) i) == PIPE_HANDLE)
-          hPipes[iPipes++] = (HANDLE) i;  /* Pipe */
+        if (__win_GetHandleType(i) == PIPE_HANDLE)
+          hPipes[iPipes++] = (HANDLE) (intptr_t) i;  /* Pipe */
         else
         {
           handles[n_handles] = (HANDLE) _get_osfhandle(i);
-          if ((DWORD) handles[n_handles] == 0xffffffff)
-            handles[n_handles] = (HANDLE) i;
+          if (handles[n_handles] == (HANDLE)(intptr_t) -1)
+            handles[n_handles] = (HANDLE)(intptr_t) i;
           handle_slot_to_fd[n_handles] = i;
           n_handles++;
         }
@@ -215,7 +215,7 @@ int _win_select(int max_fd, fd_set * rfds, fd_set * wfds, fd_set * efds,
 	    }
 	    else if (dwBytes)
 	    {
-	      FD_SET((int) hPipes[i], &aread);
+	      FD_SET((intptr_t)hPipes[i], &aread);
 	      retcode++;
 	    }
       }

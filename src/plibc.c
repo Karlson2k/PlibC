@@ -69,7 +69,7 @@ unsigned plibc_get_handle_count()
   return uiHandlesCount;
 }
 
-BOOL __win_IsHandleMarkedAsBlocking(int hHandle)
+BOOL __win_IsHandleMarkedAsBlocking(intptr_t hHandle)
 {
   BOOL bBlocking;
   unsigned int uiIndex;
@@ -89,7 +89,7 @@ BOOL __win_IsHandleMarkedAsBlocking(int hHandle)
   return bBlocking;
 }
 
-void __win_SetHandleBlockingMode(int s, BOOL bBlocking)
+void __win_SetHandleBlockingMode(intptr_t s, BOOL bBlocking)
 {
   unsigned int uiIndex = 0;
   int bFound = 0;
@@ -139,7 +139,7 @@ void __win_SetHandleBlockingMode(int s, BOOL bBlocking)
   ReleaseMutex(hSocksLock);
 }
 
-void __win_DiscardHandleBlockingMode(int s)
+void __win_DiscardHandleBlockingMode(intptr_t s)
 {
   unsigned int uiIndex;
 
@@ -150,7 +150,7 @@ void __win_DiscardHandleBlockingMode(int s)
   ReleaseMutex(hSocksLock);
 }
 
-THandleType __win_GetHandleType(DWORD dwHandle)
+THandleType __win_GetHandleType(intptr_t dwHandle)
 {
   THandleType eType;
   unsigned int uiIndex;
@@ -170,7 +170,7 @@ THandleType __win_GetHandleType(DWORD dwHandle)
   return eType;
 }
 
-void __win_SetHandleType(DWORD dwHandle, THandleType eType)
+void __win_SetHandleType(intptr_t dwHandle, THandleType eType)
 {
   unsigned int uiIndex = 0;
   int bFound = 0;
@@ -220,7 +220,7 @@ void __win_SetHandleType(DWORD dwHandle, THandleType eType)
   ReleaseMutex(hHandlesLock);
 }
 
-void __win_DiscardHandleType(DWORD dwHandle)
+void __win_DiscardHandleType(intptr_t dwHandle)
 {
   unsigned int uiIndex;
 
@@ -235,7 +235,7 @@ void __win_DiscardHandleType(DWORD dwHandle)
  * Check if socket is valid
  * @return 1 if valid, 0 otherwise
  */
-int _win_isSocketValid(int s)
+int _win_isSocketValid(intptr_t s)
 {
   long l;
   return ioctlsocket(s, FIONREAD, &l) != SOCKET_ERROR && _get_osfhandle(s) == -1;
@@ -296,14 +296,16 @@ int plibc_init_utf8(char *pszOrg, char *pszApp, int utf8_mode)
   LCID locale;
   wchar_t *binpath, *binpath_idx;
 
-  _plibc_utf8_mode = utf8_mode;
-
   if (iInit > 0)
   {
+    if (_plibc_utf8_mode != utf8_mode)
+	  return ERROR_INVALID_PARAMETER;
+	  
     iInit++;
 
     return ERROR_SUCCESS;
   }
+  _plibc_utf8_mode = utf8_mode;
 
   __plibc_panic = __plibc_panic_default;
 
@@ -468,7 +470,7 @@ int plibc_init_utf8(char *pszOrg, char *pszApp, int utf8_mode)
   uiCP = GetACP();
   SetConsoleCP(uiCP);
   SetConsoleOutputCP(uiCP);
-  setlocale( LC_ALL, ".OCP" );
+  setlocale( LC_ALL, ".OCP" ); /* FIXME: .OCP?! */
 
   /* Set LANG environment variable */
   locale = GetThreadLocale();

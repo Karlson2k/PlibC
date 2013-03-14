@@ -38,7 +38,9 @@ int _win_fstat(int handle, struct _stat *buffer)
 
     /* Handle */
     memset(buffer, 0, sizeof(struct _stat));
-    if (GetFileType((HANDLE) handle) == FILE_TYPE_UNKNOWN && GetLastError() != NO_ERROR)
+	/* FIXME: Is it ok to use same handle on _stat and GetFileType? */
+	/* FIXME: It should be different type of input parameters */
+    if (GetFileType((HANDLE) (intptr_t) handle) == FILE_TYPE_UNKNOWN && GetLastError() != NO_ERROR)
     {
       /* socket */
       unsigned long lRead;

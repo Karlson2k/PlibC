@@ -27,7 +27,7 @@
 /**
  * Create a pipe for reading and writing
  */
-int _win_pipe(int *phandles)
+int _win_pipe(intptr_t *phandles)
 {
   /* To get non-blocking pipes we could use CreateNamedPipe here. But it isn't
      implemented under Win9x. */
@@ -40,8 +40,8 @@ int _win_pipe(int *phandles)
   else
   {
     errno = 0;
-    __win_SetHandleType((DWORD) phandles[0], PIPE_HANDLE);
-    __win_SetHandleType((DWORD) phandles[1], PIPE_HANDLE);
+    __win_SetHandleType(phandles[0], PIPE_HANDLE);
+    __win_SetHandleType(phandles[1], PIPE_HANDLE);
     
     return 0;
   }
@@ -51,7 +51,7 @@ int _win_pipe(int *phandles)
  * Make a FIFO special file
  * @todo use mode
  */
-int _win_mkfifo(const char *path, mode_t mode)
+intptr_t _win_mkfifo(const char *path, mode_t mode)
 {
   HANDLE ret;
   SECURITY_ATTRIBUTES sec;
@@ -91,7 +91,7 @@ int _win_mkfifo(const char *path, mode_t mode)
   else
   {
     errno = 0;
-    __win_SetHandleType((DWORD) ret, PIPE_HANDLE);
+    __win_SetHandleType((intptr_t)ret, PIPE_HANDLE);
 
     return 0;
   }
