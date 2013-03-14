@@ -23,6 +23,7 @@
 #include <errno.h>
 
 #include "plibc.h"
+#include <string.h>
 
 /* [Aho,Sethi,Ullman] Compilers: Principles, Techniques and Tools, 1986
    [Knuth]            The Art of Computer Programming, part 3 (6.4)  */
