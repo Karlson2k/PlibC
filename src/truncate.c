@@ -24,6 +24,7 @@
 
 #include "plibc_private.h"
 
+#ifndef HAVE_FTRUNCATE
 /**
  * @author Prof. A Olowofoyeku (The African Chief)
  * @author Frank Heckenbach
@@ -74,6 +75,7 @@ int truncate(const char *fname, int distance)
 
   return i;
 }
+#endif /* ! HAVE_FTRUNCATE */
 
 int _win_ftruncate(int fildes, off_t length)
 {
