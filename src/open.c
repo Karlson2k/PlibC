@@ -35,7 +35,7 @@ int _win_open(const char *filename, int oflag, ...)
   if (_plibc_utf8_mode == 1)
     lRet = plibc_conv_to_win_pathwconv(filename, szFile);
   else
-    plibc_conv_to_win_path(filename, (char *) szFile);
+    lRet = plibc_conv_to_win_path(filename, (char *) szFile);
   if (lRet != ERROR_SUCCESS)
   {
     errno = ENOENT;
