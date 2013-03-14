@@ -52,7 +52,7 @@ size_t strnlen (const char *str, size_t maxlen)
 {
   const char *char_ptr, *end_ptr = str + maxlen;
   const unsigned long int *longword_ptr;
-  unsigned long int longword, magic_bits, himagic, lomagic;
+  uintptr_t longword, magic_bits, himagic, lomagic;
 
   if (maxlen == 0)
     return 0;
@@ -62,7 +62,7 @@ size_t strnlen (const char *str, size_t maxlen)
 
   /* Handle the first few characters by reading one character at a time.
      Do this until CHAR_PTR is aligned on a longword boundary.  */
-  for (char_ptr = str; ((unsigned long int) char_ptr
+  for (char_ptr = str; ((uintptr_t) char_ptr
 			& (sizeof (longword) - 1)) != 0;
        ++char_ptr)
     if (*char_ptr == '\0')
