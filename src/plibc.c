@@ -235,7 +235,7 @@ void __win_DiscardHandleType(intptr_t dwHandle)
 int _win_isSocketValid(intptr_t s)
 {
   long l;
-  return ioctlsocket(s, FIONREAD, &l) != SOCKET_ERROR && _get_osfhandle(s) == -1;
+  return ioctlsocket((SOCKET)s, FIONREAD, &l) != SOCKET_ERROR && _get_osfhandle(s) == -1;
 }
 
 /**
