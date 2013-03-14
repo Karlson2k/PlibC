@@ -24,10 +24,9 @@
 
 #include "plibc_private.h"
 
-FILE *_win_wfopen(const wchar_t *filename, const wchar_t *mode)
+FILE *_win_wfopen(const wchar_t *filename, const wchar_t *wmode)
 {
   wchar_t szFile[_MAX_PATH + 1];
-  wchar_t *wmode;
   FILE *hFile;
   int i;
 
