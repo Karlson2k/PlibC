@@ -28,6 +28,15 @@
 #ifndef _PLIBC_H_
 #define _PLIBC_H_
 
+#define _PLIBC_ "PlibC-0.1.8k"
+#define _PLIBC_MAJOR_ 0
+#define _PLIBC_MINOR_ 1
+#define _PLIBC_PATCHLEVEL_ 8
+/* One character lib mod ID */
+#define _PLIBC_MOD_ 'k'
+/* Defined as 1 if UTF-8 is supported in PlibC */
+#define _PLIBC_UTF8_ 1
+
 #ifndef SIGALRM
  #define SIGALRM 14
 #endif
