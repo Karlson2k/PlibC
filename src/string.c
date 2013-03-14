@@ -53,7 +53,7 @@ size_t strnlen (const char *str, size_t maxlen)
 {
   const char *char_ptr, *end_ptr = str + maxlen;
   const unsigned long int *longword_ptr;
-  uintptr_t longword, magic_bits, himagic, lomagic;
+  uintptr_t longword, himagic, lomagic;
 
   if (maxlen == 0)
     return 0;
@@ -78,23 +78,12 @@ size_t strnlen (const char *str, size_t maxlen)
 
   longword_ptr = (unsigned long int *) char_ptr;
 
-  /* Bits 31, 24, 16, and 8 of this number are zero.  Call these bits
-     the "holes."  Note that there is a hole just to the left of
-     each byte, with an extra at the end:
-
-     bits:  01111110 11111110 11111110 11111111
-     bytes: AAAAAAAA BBBBBBBB CCCCCCCC DDDDDDDD
-
-     The 1-bits make sure that carries propagate to the next 0-bit.
-     The 0-bits provide holes for carries to fall into.  */
-  magic_bits = 0x7efefeffL;
   himagic = 0x80808080L;
   lomagic = 0x01010101L;
   if (sizeof (longword) > 4)
     {
       /* 64-bit version of the magic.  */
       /* Do the shift in two steps to avoid a warning if long has 32 bits.  */
-      magic_bits = ((0x7efefefeL << 16) << 16) | 0xfefefeffL;
       himagic = ((himagic << 16) << 16) | himagic;
       lomagic = ((lomagic << 16) << 16) | lomagic;
     }
@@ -111,7 +100,7 @@ size_t strnlen (const char *str, size_t maxlen)
 
       longword = *longword_ptr++;
 
-      if ((longword - lomagic) & himagic)
+      if (((longword - lomagic) & ~longword & himagic) != 0)
 	{
 	  /* Which of the bytes was the zero?  If none of them were, it was
 	     a misfire; continue the search.  */
