@@ -74,4 +74,5 @@ dnl Checks for library functions.
 
 LDFLAGS="$LDFLAGS -no-undefined"
 CPPFLAGS="$CPPFLAGS -D_CRT_NON_CONFORMING_SWPRINTFS -DUSE_IPV6"
+CFLAGS="$CFLAGS -Wall -Wuninitialized -Winit-self -Wimplicit -Wtype-limits -Wredundant-decls -Wlogical-op -Wno-pointer-sign"
 AC_OUTPUT(Makefile src/Makefile src/include/Makefile plibc.lsm plibc.spec)
