@@ -665,7 +665,9 @@ char *index(const char *s, int c);
 char *strndup (const char *s, size_t n);
 #endif
 #if !HAVE_STRNLEN
+#if !defined(__MINGW64_VERSION_MAJOR) && !defined(_INC_STRING)
 size_t strnlen (const char *str, size_t maxlen);
+#endif
 #endif
 char *stpcpy(char *dest, const char *src);
 char *strcasestr(const char *haystack_start, const char *needle_start);

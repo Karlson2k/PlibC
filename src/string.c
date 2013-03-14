@@ -44,6 +44,7 @@ char *strndup (const char *s, size_t n)
 #endif
 
 #if !HAVE_STRNLEN
+#if !defined(__MINGW64_VERSION_MAJOR) && !defined(_INC_STRING)
 /**
  * Determine the length of a fixed-size string
  * @author Jakub Jelinek (jakub at redhat dot com)
@@ -152,6 +153,7 @@ size_t strnlen (const char *str, size_t maxlen)
     char_ptr = end_ptr;
   return char_ptr - str;
 }
+#endif
 #endif
 
 /**
