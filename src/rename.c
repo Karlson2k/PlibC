@@ -35,9 +35,9 @@ int _win_rename(const char *oldname, const char *newname)
   long lRet;
 
   if (_plibc_utf8_mode == 1)
-    lRet = plibc_conv_to_win_pathwconv_ex(oldname, szOldName, 0);
+    lRet = plibc_conv_to_win_pathwconv_ex(oldname, szOldName, _MAX_PATH, 0);
   else
-    lRet = plibc_conv_to_win_path_ex(oldname, (char *) szOldName, 0);
+    lRet = plibc_conv_to_win_path_ex(oldname, (char *) szOldName, _MAX_PATH, 0);
   if (lRet != ERROR_SUCCESS)
   {
     SetErrnoFromWinError(lRet);
@@ -45,9 +45,9 @@ int _win_rename(const char *oldname, const char *newname)
   }
 
   if (_plibc_utf8_mode == 1)
-    lRet = plibc_conv_to_win_pathwconv_ex(newname, szNewName, 0);
+    lRet = plibc_conv_to_win_pathwconv_ex(newname, szNewName, _MAX_PATH, 0);
   else
-    lRet = plibc_conv_to_win_path_ex(newname, (char *) szNewName, 0);
+    lRet = plibc_conv_to_win_path_ex(newname, (char *) szNewName, _MAX_PATH, 0);
   if (lRet != ERROR_SUCCESS)
   {
     SetErrnoFromWinError(lRet);

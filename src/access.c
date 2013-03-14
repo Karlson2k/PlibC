@@ -34,9 +34,9 @@ int _win_access( const char *path, int mode )
 
   mode &= 6;
   if (_plibc_utf8_mode == 1)
-    lRet = plibc_conv_to_win_pathwconv(path, szFile);
+    lRet = plibc_conv_to_win_pathwconv(path, szFile, _MAX_PATH);
   else
-    lRet = plibc_conv_to_win_path(path, (char *) szFile);
+    lRet = plibc_conv_to_win_path(path, (char *) szFile, _MAX_PATH);
   if (lRet != ERROR_SUCCESS)
   {
     SetErrnoFromWinError(lRet);

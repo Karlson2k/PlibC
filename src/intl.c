@@ -34,7 +34,7 @@ char *_win_bindtextdomain(const char *domainname, const char *dirname)
   char szDirname[_MAX_PATH + 1];
   int i;
   
-  if ((i = plibc_conv_to_win_path(dirname, szDirname)) != ERROR_SUCCESS)
+  if ((i = plibc_conv_to_win_path(dirname, szDirname, _MAX_PATH)) != ERROR_SUCCESS)
   {
     SetErrnoFromWinError(i);
 

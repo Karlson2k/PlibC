@@ -30,7 +30,7 @@ FILE *_win_wfopen(const wchar_t *filename, const wchar_t *wmode)
   FILE *hFile;
   int i;
 
-  if ((i = plibc_conv_to_win_pathw(filename, szFile)) != ERROR_SUCCESS)
+  if ((i = plibc_conv_to_win_pathw(filename, szFile, _MAX_PATH)) != ERROR_SUCCESS)
   {
     SetErrnoFromWinError(i);
     return NULL;

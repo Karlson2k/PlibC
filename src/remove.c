@@ -34,9 +34,9 @@ int _win_remove(const char *path)
   long lRet;
 
   if (_plibc_utf8_mode == 1)
-    lRet = plibc_conv_to_win_pathwconv_ex(path, szFile, 0);
+    lRet = plibc_conv_to_win_pathwconv_ex(path, szFile, _MAX_PATH, 0);
   else
-    lRet = plibc_conv_to_win_path_ex(path, (char *) szFile, 0);
+    lRet = plibc_conv_to_win_path_ex(path, (char *) szFile, _MAX_PATH, 0);
   if (lRet != ERROR_SUCCESS)
   {
     SetErrnoFromWinError(lRet);

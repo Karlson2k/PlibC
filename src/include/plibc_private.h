@@ -104,6 +104,9 @@ long _plibc_DetermineRootDir(void);
 long _plibc_DetermineProgramDataDir(void);
 long _plibc_DetermineHomeDir(void);
 
+int plibc_conv_to_win_path_ex(const char *pszUnix, char *pszWindows, size_t pszWindows_buff_length, int derefLinks);
+int plibc_conv_to_win_pathw_ex(const wchar_t *pszUnix, wchar_t *pszWindows, size_t pszWindows_buff_length, int derefLinks);
+
 #endif //_PLIBC_PRIVATE_H_
 
 /* end of plibc_private.h */

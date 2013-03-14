@@ -44,13 +44,12 @@ extern wchar_t szUser[261];
 extern wchar_t *_pwszOrg;
 extern wchar_t *_pwszApp;
 
-
 /**
  * @brief Determine the Windows path of our / directory
  * @internal
  * @return Error code from winerror.h, ERROR_SUCCESS on success
  */
-long _plibc_DetermineRootDir()
+long _plibc_DetermineRootDir(void)
 {
   wchar_t wszModule[_MAX_PATH], wszDrv[_MAX_DRIVE], wszDir[_MAX_DIR];
   wchar_t *pwszBin;
@@ -120,7 +119,7 @@ long _plibc_DetermineRootDir()
  * @internal
  * @return Error code from winerror.h, ERROR_SUCCESS on success
 */
-long _plibc_DetermineHomeDir()
+long _plibc_DetermineHomeDir(void)
 {
   wchar_t *lpwszProfile = _wgetenv(L"USERPROFILE");
   if(lpwszProfile != NULL && lpwszProfile[0] != 0)        /* Windows NT */
@@ -181,7 +180,7 @@ long _plibc_DetermineHomeDir()
   return ERROR_SUCCESS;
 }
 
-long _plibc_DetermineProgramDataDir()
+long _plibc_DetermineProgramDataDir(void)
 {
   long lRet;
   
@@ -221,36 +220,36 @@ long _plibc_DetermineProgramDataDir()
  * @param pszWindows Windows path
  * @return Error code from winerror.h, ERROR_SUCCESS on success
 */
-int plibc_conv_to_win_path(const char *pszUnix, char *pszWindows)
+int plibc_conv_to_win_path(const char *pszUnix, char *pszWindows, size_t pszWindows_buff_length)
 {
-  return plibc_conv_to_win_path_ex(pszUnix, pszWindows, 1);
+  return plibc_conv_to_win_path_ex(pszUnix, pszWindows, pszWindows_buff_length, 1);
 }
 
-int plibc_conv_to_win_pathw(const wchar_t *pszUnix, wchar_t *pszWindows)
+int plibc_conv_to_win_pathw(const wchar_t *pszUnix, wchar_t *pszWindows, size_t pszWindows_buff_length)
 {
-  return plibc_conv_to_win_pathw_ex(pszUnix, pszWindows, 1);
+  return plibc_conv_to_win_pathw_ex(pszUnix, pszWindows, pszWindows_buff_length, 1);
 }
 
-int plibc_conv_to_win_pathwconv(const char *pszUnix, wchar_t *pszWindows)
+int plibc_conv_to_win_pathwconv(const char *pszUnix, wchar_t *pszWindows, size_t pszWindows_buff_length)
 {
   wchar_t *pwszUnix;
   int r;
   r = strtowchar (pszUnix, &pwszUnix, CP_UTF8);
   if (r < 0)
     return r;
-  r = plibc_conv_to_win_pathw_ex(pwszUnix, pszWindows, 1);
+  r = plibc_conv_to_win_pathw_ex(pwszUnix, pszWindows, pszWindows_buff_length, 1);
   free (pwszUnix);
   return r;
 }
 
-int plibc_conv_to_win_pathwconv_ex(const char *pszUnix, wchar_t *pszWindows, int derefLinks)
+int plibc_conv_to_win_pathwconv_ex(const char *pszUnix, wchar_t *pszWindows, size_t pszWindows_buff_length, int derefLinks)
 {
   wchar_t *pwszUnix;
   int r;
   r = strtowchar (pszUnix, &pwszUnix, CP_UTF8);
   if (r < 0)
     return r;
-  r = plibc_conv_to_win_pathw_ex(pwszUnix, pszWindows, derefLinks);
+  r = plibc_conv_to_win_pathw_ex(pwszUnix, pszWindows, pszWindows_buff_length, derefLinks);
   free (pwszUnix);
   return r;
 }
@@ -262,7 +261,7 @@ int plibc_conv_to_win_pathwconv_ex(const char *pszUnix, wchar_t *pszWindows, int
  * @param derefLinks 1 to dereference links
  * @return Error code from winerror.h, ERROR_SUCCESS on success
 */
-int plibc_conv_to_win_pathw_ex(const wchar_t *pszUnix, wchar_t *pszWindows, int derefLinks)
+int plibc_conv_to_win_pathw_ex(const wchar_t *pszUnix, wchar_t *pszWindows, size_t pszWindows_buff_length, int derefLinks)
 {
   wchar_t *pSrc, *pDest;
   long iSpaceUsed;
@@ -270,22 +269,26 @@ int plibc_conv_to_win_pathw_ex(const wchar_t *pszUnix, wchar_t *pszWindows, int 
 
   if (!pszUnix || !pszWindows)
     return ERROR_INVALID_PARAMETER;
+  if (pszWindows_buff_length <= 0)
+    return ERROR_BUFFER_OVERFLOW;
 
   iUnixLen = wcslen(pszUnix);
 
   /* Check if we already have a windows path */
   if((wcschr(pszUnix, L'\\') != NULL) || (wcschr(pszUnix, L':') != NULL))
   {
-    if(iUnixLen > MAX_PATH)
+    if(iUnixLen > pszWindows_buff_length)
       return ERROR_BUFFER_OVERFLOW;
-    wcscpy(pszWindows, pszUnix);
+    wcsncpy(pszWindows, pszUnix, pszWindows_buff_length);
   }
 
   /* Temp. dir? */
   if(wcsncmp(pszUnix, L"/tmp", 4) == 0)
   {
-    iSpaceUsed = GetTempPathW(_MAX_PATH, pszWindows);
-    if (iSpaceUsed > _MAX_PATH)
+    iSpaceUsed = GetTempPathW(pszWindows_buff_length, pszWindows);
+	if (iSpaceUsed == 0 )
+      return ERROR_INVALID_PARAMETER;
+    if (iSpaceUsed > pszWindows_buff_length)
       return ERROR_BUFFER_OVERFLOW;
     pDest = pszWindows + iSpaceUsed;
     pSrc = (wchar_t *) pszUnix + 4;
@@ -293,8 +296,10 @@ int plibc_conv_to_win_pathw_ex(const wchar_t *pszUnix, wchar_t *pszWindows, int 
   /* Bit bucket? */
   else if (wcsncmp(pszUnix, L"/dev/null", 9) == 0)
   {
-    wcscpy(pszWindows, L"nul");
+    wcsncpy(pszWindows, L"nul", pszWindows_buff_length);
     iSpaceUsed = 3;
+    if (iSpaceUsed > pszWindows_buff_length)
+      return ERROR_BUFFER_OVERFLOW;
     pDest = pszWindows + lHomeDirLen;
     pSrc = (wchar_t *) pszUnix + 9;
   }
@@ -303,32 +308,40 @@ int plibc_conv_to_win_pathw_ex(const wchar_t *pszUnix, wchar_t *pszWindows, int 
     wcsncmp(pszUnix, L"/com", 4) == 0 ||
     wcsncmp(pszUnix, L"/var", 4) == 0)
   {
-    wcscpy(pszWindows, szDataDir);
+    wcsncpy(pszWindows, szDataDir, pszWindows_buff_length);
     iSpaceUsed = lDataDirLen;
+    if (iSpaceUsed > pszWindows_buff_length)
+      return ERROR_BUFFER_OVERFLOW;
     pDest = pszWindows + lDataDirLen;
     pSrc = (wchar_t *) pszUnix + 1;
   }
   /* Is the unix path a full path? */
   else if(pszUnix[0] == L'/')
   {
-    wcscpy(pszWindows, szRootDir);
+    wcsncpy(pszWindows, szRootDir, pszWindows_buff_length);
     iSpaceUsed = lRootDirLen;
+    if (iSpaceUsed > pszWindows_buff_length)
+      return ERROR_BUFFER_OVERFLOW;
     pDest = pszWindows + lRootDirLen;
     pSrc = (wchar_t *) pszUnix + 1;
   }
   /* Home dir? */
   else if (pszUnix[0] == L'~')
   {
-    wcscpy(pszWindows, szHomeDir);
+    wcsncpy(pszWindows, szHomeDir, pszWindows_buff_length);
     iSpaceUsed = lHomeDirLen;
+    if (iSpaceUsed > pszWindows_buff_length)
+      return ERROR_BUFFER_OVERFLOW;
     pDest = pszWindows + lHomeDirLen;
     pSrc = (wchar_t *) pszUnix + 1;
   }
   /* Home dir (env var)? */
   else if (wcsncmp(pszUnix, L"$HOME", 5) == 0)
   {
-    wcscpy(pszWindows, szHomeDir);
+    wcsncpy(pszWindows, szHomeDir, pszWindows_buff_length);
     iSpaceUsed = lHomeDirLen;
+    if (iSpaceUsed > pszWindows_buff_length)
+      return ERROR_BUFFER_OVERFLOW;
     pDest = pszWindows + lHomeDirLen;
     pSrc = (wchar_t *) pszUnix + 5;  	
   }
@@ -340,7 +353,7 @@ int plibc_conv_to_win_pathw_ex(const wchar_t *pszUnix, wchar_t *pszWindows, int 
   }
 
   iSpaceUsed += wcslen(pSrc);
-  if(iSpaceUsed + 1 > _MAX_PATH)
+  if(iSpaceUsed + 1 > pszWindows_buff_length)
     return ERROR_BUFFER_OVERFLOW;
 
   /* substitute all slashes */
@@ -377,7 +390,7 @@ int plibc_conv_to_win_pathw_ex(const wchar_t *pszUnix, wchar_t *pszWindows, int 
         wchar_t *pLnk;
         int mal;
         
-        if (iSpaceUsed + 5 > _MAX_PATH)
+        if (iSpaceUsed + 5 > pszWindows_buff_length)
         {
           pLnk = malloc((iSpaceUsed + 5) * sizeof (wchar_t));
           wcscpy(pLnk, pszWindows);
@@ -398,14 +411,16 @@ int plibc_conv_to_win_pathw_ex(const wchar_t *pszUnix, wchar_t *pszWindows, int 
           /* Shortcut exists */
           CloseHandle(h);
           if (mal)
+		  {
             /* Need to copy */
-            if (iSpaceUsed + 5 <= _MAX_PATH)
+            if (iSpaceUsed + 5 <= pszWindows_buff_length)
               wcscpy(pszWindows, pLnk);
             else
             {
               free(pLnk);
               return ERROR_BUFFER_OVERFLOW;
             }
+		  }
         }
         else
           pLnk[iSpaceUsed] = 0;   
@@ -432,7 +447,7 @@ int plibc_conv_to_win_pathw_ex(const wchar_t *pszUnix, wchar_t *pszWindows, int 
   return ERROR_SUCCESS;
 }
 
-int plibc_conv_to_win_path_ex(const char *pszUnix, char *pszWindows, int derefLinks)
+int plibc_conv_to_win_path_ex(const char *pszUnix, char *pszWindows, size_t pszWindows_buff_length, int derefLinks)
 {
   char *pSrc, *pDest;
   long iSpaceUsed;
@@ -440,22 +455,26 @@ int plibc_conv_to_win_path_ex(const char *pszUnix, char *pszWindows, int derefLi
 
   if (!pszUnix || !pszWindows)
     return ERROR_INVALID_PARAMETER;
+  if (pszWindows_buff_length <= 0)
+    return ERROR_BUFFER_OVERFLOW;
 
   iUnixLen = strlen(pszUnix);
 
   /* Check if we already have a windows path */
   if((strchr(pszUnix, '\\') != NULL) || (strchr(pszUnix, ':') != NULL))
   {
-    if(iUnixLen > MAX_PATH)
+    if(iUnixLen > pszWindows_buff_length)
       return ERROR_BUFFER_OVERFLOW;
-    strcpy(pszWindows, pszUnix);
+    strncpy(pszWindows, pszUnix, pszWindows_buff_length);
   }
 
   /* Temp. dir? */
   if(strncmp(pszUnix, "/tmp", 4) == 0)
   {
-    iSpaceUsed = GetTempPath(_MAX_PATH, pszWindows);
-    if (iSpaceUsed > _MAX_PATH)
+    iSpaceUsed = GetTempPath(pszWindows_buff_length, pszWindows);
+	if (iSpaceUsed == 0)
+      return ERROR_INVALID_PARAMETER;
+    if (iSpaceUsed > pszWindows_buff_length)
       return ERROR_BUFFER_OVERFLOW;
     pDest = pszWindows + iSpaceUsed;
     pSrc = (char *) pszUnix + 4;
@@ -463,8 +482,10 @@ int plibc_conv_to_win_path_ex(const char *pszUnix, char *pszWindows, int derefLi
   /* Bit bucket? */
   else if (strncmp(pszUnix, "/dev/null", 9) == 0)
   {
-    strcpy(pszWindows, "nul");
+    strncpy(pszWindows, "nul", pszWindows_buff_length);
     iSpaceUsed = 3;
+    if (iSpaceUsed > pszWindows_buff_length)
+      return ERROR_BUFFER_OVERFLOW;
     pDest = pszWindows + luHomeDirLen;
     pSrc = (char *) pszUnix + 9;
   }
@@ -473,32 +494,40 @@ int plibc_conv_to_win_path_ex(const char *pszUnix, char *pszWindows, int derefLi
     strncmp(pszUnix, "/com", 4) == 0 ||
     strncmp(pszUnix, "/var", 4) == 0)
   {
-    strcpy(pszWindows, szuDataDir);
+    strncpy(pszWindows, szuDataDir, pszWindows_buff_length);
     iSpaceUsed = luDataDirLen;
+    if (iSpaceUsed > pszWindows_buff_length)
+      return ERROR_BUFFER_OVERFLOW;
     pDest = pszWindows + luDataDirLen;
     pSrc = (char *) pszUnix + 1;
   }
   /* Is the unix path a full path? */
   else if(pszUnix[0] == '/')
   {
-    strcpy(pszWindows, szuRootDir);
+    strncpy(pszWindows, szuRootDir, pszWindows_buff_length);
     iSpaceUsed = luRootDirLen;
+    if (iSpaceUsed > pszWindows_buff_length)
+      return ERROR_BUFFER_OVERFLOW;
     pDest = pszWindows + luRootDirLen;
     pSrc = (char *) pszUnix + 1;
   }
   /* Home dir? */
   else if (pszUnix[0] == '~')
   {
-    strcpy(pszWindows, szuHomeDir);
+    strncpy(pszWindows, szuHomeDir, pszWindows_buff_length);
     iSpaceUsed = luHomeDirLen;
+    if (iSpaceUsed > pszWindows_buff_length)
+      return ERROR_BUFFER_OVERFLOW;
     pDest = pszWindows + luHomeDirLen;
     pSrc = (char *) pszUnix + 1;
   }
   /* Home dir (env var)? */
   else if (strncmp(pszUnix, "$HOME", 5) == 0)
   {
-    strcpy(pszWindows, szuHomeDir);
+    strncpy(pszWindows, szuHomeDir, pszWindows_buff_length);
     iSpaceUsed = luHomeDirLen;
+    if (iSpaceUsed > pszWindows_buff_length)
+      return ERROR_BUFFER_OVERFLOW;
     pDest = pszWindows + luHomeDirLen;
     pSrc = (char *) pszUnix + 5;  	
   }
@@ -510,7 +539,7 @@ int plibc_conv_to_win_path_ex(const char *pszUnix, char *pszWindows, int derefLi
   }
 
   iSpaceUsed += strlen(pSrc);
-  if(iSpaceUsed + 1 > _MAX_PATH)
+  if(iSpaceUsed + 1 > pszWindows_buff_length)
     return ERROR_BUFFER_OVERFLOW;
 
   /* substitute all slashes */
@@ -547,7 +576,7 @@ int plibc_conv_to_win_path_ex(const char *pszUnix, char *pszWindows, int derefLi
         char *pLnk;
         int mal;
         
-        if (iSpaceUsed + 5 > _MAX_PATH)
+        if (iSpaceUsed + 5 > pszWindows_buff_length)
         {
           pLnk = malloc(iSpaceUsed + 5);
           strcpy(pLnk, pszWindows);
@@ -568,14 +597,16 @@ int plibc_conv_to_win_path_ex(const char *pszUnix, char *pszWindows, int derefLi
           /* Shortcut exists */
           CloseHandle(h);
           if (mal)
+          {
             /* Need to copy */
-            if (iSpaceUsed + 5 <= _MAX_PATH)
+            if (iSpaceUsed + 5 <= pszWindows_buff_length)
               strcpy(pszWindows, pLnk);
             else
             {
               free(pLnk);
               return ERROR_BUFFER_OVERFLOW;
             }
+          }
         }
         else
           pLnk[iSpaceUsed] = 0;   

@@ -503,11 +503,11 @@ BOOL __win_IsHandleMarkedAsBlocking(intptr_t hHandle);
 void __win_SetHandleBlockingMode(intptr_t s, BOOL bBlocking);
 void __win_DiscardHandleBlockingMode(intptr_t s);
 int _win_isSocketValid(intptr_t s);
-int plibc_conv_to_win_path(const char *pszUnix, char *pszWindows);
-int plibc_conv_to_win_pathw(const wchar_t *pszUnix, wchar_t *pwszWindows);
+int plibc_conv_to_win_path(const char *pszUnix, char *pszWindows, size_t pszWindows_buff_length);
+int plibc_conv_to_win_pathw(const wchar_t *pszUnix, wchar_t *pwszWindows, size_t pszWindows_buff_length);
 
-int plibc_conv_to_win_pathwconv(const char *pszUnix, wchar_t *pwszWindows);
-int plibc_conv_to_win_pathwconv_ex(const char *pszUnix, wchar_t *pszWindows, int derefLinks);
+int plibc_conv_to_win_pathwconv(const char *pszUnix, wchar_t *pwszWindows, size_t pszWindows_buff_length);
+int plibc_conv_to_win_pathwconv_ex(const char *pszUnix, wchar_t *pszWindows, size_t pszWindows_buff_length, int derefLinks);
 
 unsigned plibc_get_handle_count();
 
@@ -567,7 +567,7 @@ intptr_t _win_mkfifo(const char *path, mode_t mode);
 int _win_rmdir(const char *path);
 int _win_access( const char *path, int mode );
 int _win_chmod(const char *filename, int pmode);
-char *realpath(const char *file_name, char *resolved_name);
+char *realpath(const char *file_name, char *resolved_name, size_t resolv_buffer_size);
 long _win_random(void);
 void _win_srandom(unsigned int seed);
 int _win_remove(const char *path);

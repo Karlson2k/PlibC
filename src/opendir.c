@@ -34,9 +34,9 @@ DIR *_win_opendir(const char *dirname)
   wchar_t szDir[_MAX_PATH + 1];
   long lRet;
   if (_plibc_utf8_mode == 1)
-    lRet = plibc_conv_to_win_pathwconv(dirname, szDir);
+    lRet = plibc_conv_to_win_pathwconv(dirname, szDir, _MAX_PATH);
   else
-    lRet = plibc_conv_to_win_path(dirname, (char *) szDir);
+    lRet = plibc_conv_to_win_path(dirname, (char *) szDir, _MAX_PATH);
   if (lRet != ERROR_SUCCESS)
   {
     SetErrnoFromWinError(lRet);

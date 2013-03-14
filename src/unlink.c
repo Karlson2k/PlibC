@@ -34,9 +34,9 @@ int _win_unlink(const char *filename)
   long lRet;
 
   if (_plibc_utf8_mode == 1)
-    lRet = plibc_conv_to_win_pathwconv_ex(filename, szFile, 0);
+    lRet = plibc_conv_to_win_pathwconv_ex(filename, szFile, _MAX_PATH, 0);
   else
-    lRet = plibc_conv_to_win_path_ex(filename, szFile, 0);
+    lRet = plibc_conv_to_win_path_ex(filename, (char *)szFile, _MAX_PATH, 0);
   if (lRet != ERROR_SUCCESS)
   {
     SetErrnoFromWinError(lRet);

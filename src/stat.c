@@ -33,9 +33,9 @@ int __win_stat(const char *path, struct _stat *buffer, int iDeref)
   long lRet;
 
   if (_plibc_utf8_mode == 1)
-    lRet = plibc_conv_to_win_pathwconv(path, szFile);
+    lRet = plibc_conv_to_win_pathwconv(path, szFile, _MAX_PATH);
   else
-    lRet = plibc_conv_to_win_path(path, (char *) szFile);
+    lRet = plibc_conv_to_win_path(path, (char *) szFile, _MAX_PATH);
   if (lRet != ERROR_SUCCESS)
   {
     SetErrnoFromWinError(lRet);
@@ -103,9 +103,9 @@ int __win_stat64(const char *path, struct stat64 *buffer, int iDeref)
   long lRet;
 
   if (_plibc_utf8_mode == 1)
-    lRet = plibc_conv_to_win_pathwconv(path, szFile);
+    lRet = plibc_conv_to_win_pathwconv(path, szFile, _MAX_PATH);
   else
-    lRet = plibc_conv_to_win_path(path, (char *) szFile);
+    lRet = plibc_conv_to_win_path(path, (char *) szFile, _MAX_PATH);
   if (lRet != ERROR_SUCCESS)
   {
     SetErrnoFromWinError(lRet);

@@ -34,8 +34,8 @@ int statfs(const char *path, struct statfs *buf)
   BOOL b;
   HINSTANCE h;
   FARPROC f;
-  wchar_t tmp[MAX_PATH], resolved_path[MAX_PATH];
-  char uresolved_path[MAX_PATH];
+  wchar_t tmp[MAX_PATH+1], resolved_path[MAX_PATH+1];
+  char uresolved_path[MAX_PATH+1];
   int retval = 0;
 
   errno = 0;
@@ -43,14 +43,14 @@ int statfs(const char *path, struct statfs *buf)
 
   if (_plibc_utf8_mode == 1)
   {
-    realpath(path, uresolved_path);
+    realpath(path, uresolved_path, MAX_PATH);
     strtowchar_buf (uresolved_path, resolved_path, MAX_PATH, CP_UTF8);
     if (!resolved_path[0])
       retval = -1;
   }
   else
   {
-    realpath(path, (char *) resolved_path);
+    realpath(path, (char *) resolved_path, MAX_PATH);
     if(!((char *) resolved_path)[0])
       retval = -1;
   }

@@ -24,7 +24,7 @@
 
 #include "plibc_private.h"
 
-char *realpath(const char *file_name, char *resolved_name)
+char *realpath(const char *file_name, char *resolved_name, size_t resolv_buffer_length)
 {
   long lRet;
   wchar_t szFile[_MAX_PATH + 1];
@@ -33,29 +33,31 @@ char *realpath(const char *file_name, char *resolved_name)
   char *result = NULL;
 
   if (_plibc_utf8_mode == 1)
-    lRet = plibc_conv_to_win_pathwconv(file_name, szFile);
-  else
-    lRet = plibc_conv_to_win_path(file_name, (char *) szFile);
-  if (lRet != ERROR_SUCCESS)
   {
-    SetErrnoFromWinError(lRet);
-    return NULL;
-  }
-
-  if (_plibc_utf8_mode == 1)
+    lRet = plibc_conv_to_win_pathwconv(file_name, szFile, _MAX_PATH );
+    if (lRet != ERROR_SUCCESS)
+    {
+      SetErrnoFromWinError(lRet);
+      return NULL;
+    }
     wresult = _wfullpath(szRet, szFile, MAX_PATH);
-  else
-    result = _fullpath(resolved_name, (char *) szFile, MAX_PATH);
-  SetErrnoFromWinError(GetLastError());
-
-  if (_plibc_utf8_mode == 1)
-  {
+    SetErrnoFromWinError(GetLastError());
     if (wresult)
       wchartostr (szRet, &result, CP_UTF8);
     return result;
   }
   else
+  {
+    lRet = plibc_conv_to_win_path(file_name, (char *) szFile, _MAX_PATH );
+    if (lRet != ERROR_SUCCESS)
+    {
+      SetErrnoFromWinError(lRet);
+      return NULL;
+    }
+    result = _fullpath(resolved_name, (char *) szFile, resolv_buffer_length);
+    SetErrnoFromWinError(GetLastError());
     return result;
+  }
 }
 
 /* end of realpath.c */

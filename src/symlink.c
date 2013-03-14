@@ -33,12 +33,12 @@ int _win_symlink(const char *path1, const char *path2)
   if (_plibc_utf8_mode == 1)
   {
     wchar_t szFile1[_MAX_PATH + 1], szFile2[_MAX_PATH + 1];
-    if ((lRet = plibc_conv_to_win_pathwconv(path1, szFile1)) != ERROR_SUCCESS)
+    if ((lRet = plibc_conv_to_win_pathwconv(path1, szFile1, _MAX_PATH)) != ERROR_SUCCESS)
     {
       SetErrnoFromWinError(lRet);
       return -1;
     }
-    if ((lRet = plibc_conv_to_win_pathwconv_ex(path2, szFile2, 0)) != ERROR_SUCCESS)
+    if ((lRet = plibc_conv_to_win_pathwconv_ex(path2, szFile2, _MAX_PATH, 0)) != ERROR_SUCCESS)
     {
       SetErrnoFromWinError(lRet);
       return -1;
@@ -50,12 +50,12 @@ int _win_symlink(const char *path1, const char *path2)
   else
   {
     char szFile1[_MAX_PATH + 1], szFile2[_MAX_PATH + 1];
-    if ((lRet = plibc_conv_to_win_path(path1, szFile1)) != ERROR_SUCCESS)
+    if ((lRet = plibc_conv_to_win_path(path1, szFile1, _MAX_PATH)) != ERROR_SUCCESS)
     {
       SetErrnoFromWinError(lRet);
       return -1;
     }
-    if ((lRet = plibc_conv_to_win_path_ex(path2, szFile2, 0)) != ERROR_SUCCESS)
+    if ((lRet = plibc_conv_to_win_path_ex(path2, szFile2, _MAX_PATH, 0)) != ERROR_SUCCESS)
     {
       SetErrnoFromWinError(lRet);
       return -1;

@@ -33,9 +33,9 @@ int _win_open(const char *filename, int oflag, ...)
   wchar_t szFile[_MAX_PATH + 1];
   long lRet;
   if (_plibc_utf8_mode == 1)
-    lRet = plibc_conv_to_win_pathwconv(filename, szFile);
+    lRet = plibc_conv_to_win_pathwconv(filename, szFile, _MAX_PATH);
   else
-    lRet = plibc_conv_to_win_path(filename, (char *) szFile);
+    lRet = plibc_conv_to_win_path(filename, (char *) szFile, _MAX_PATH);
   if (lRet != ERROR_SUCCESS)
   {
     errno = ENOENT;
