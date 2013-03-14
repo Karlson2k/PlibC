@@ -1,5 +1,17 @@
+2013-03-15  Evgeny Grin
+  * Path functions respect buffer size
+
+2013-03-14  Evgeny Grin
+  * UTF-8 fixes
+  * Real x64 compatibility - a lot of fixes
+  * Fix missing declarations in public and private headers
+  * random now use rand()
+
 2012-05-05  Richard Boulton
   * pthreads compatibility
+
+2012-04-20  LRN
+  * UTF-8 Support
 
 2011-11-30  LRN
   * msync()
