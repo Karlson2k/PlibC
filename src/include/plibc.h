@@ -88,7 +88,6 @@ struct _stat64
 };
 #define stat64 _stat64
 #endif
-typedef unsigned int sa_family_t;
 
 struct sockaddr_un {
   short sun_family; /*AF_UNIX*/
