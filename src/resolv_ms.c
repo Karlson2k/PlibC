@@ -814,9 +814,9 @@ typedef struct
 
 #define WSPIAPI_FUNCTION_ARRAY                                  \
 {                                                               \
-    "getaddrinfo",      (FARPROC) WspiapiLegacyGetAddrInfo,     \
-    "getnameinfo",      (FARPROC) WspiapiLegacyGetNameInfo,     \
-    "freeaddrinfo",     (FARPROC) WspiapiLegacyFreeAddrInfo,    \
+    {"getaddrinfo",      (FARPROC) WspiapiLegacyGetAddrInfo},   \
+    {"getnameinfo",      (FARPROC) WspiapiLegacyGetNameInfo},   \
+    {"freeaddrinfo",     (FARPROC) WspiapiLegacyFreeAddrInfo}   \
 }
 
 
@@ -853,8 +853,6 @@ Return Value
     HMODULE                 hLibrary        = NULL;
 
     // these static variables store state across calls, across threads.
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wmissing-braces"
     static BOOL             bInitialized    = FALSE;
     static WSPIAPI_FUNCTION rgtGlobal[]     = WSPIAPI_FUNCTION_ARRAY;
     static const int        iNumGlobal      = (sizeof(rgtGlobal) /
@@ -864,8 +862,6 @@ Return Value
     WSPIAPI_FUNCTION        rgtLocal[]      = WSPIAPI_FUNCTION_ARRAY;
     FARPROC                 fScratch        = NULL;
     int                     i               = 0;
-
-#pragma GCC diagnostic pop
 
     if (bInitialized)           // WspiapiLoad has already been called once
         return (rgtGlobal[wFunction].pfAddress);
